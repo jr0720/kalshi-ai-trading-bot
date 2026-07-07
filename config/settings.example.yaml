@@ -1,0 +1,66 @@
+# Card Checkout Bot Configuration
+# Copy this to settings.yaml and fill in your values.
+
+# Products to monitor and auto-checkout
+products:
+  - url: "https://example-cards.myshopify.com/products/booster-box"
+    size_or_variant: ""       # optional: variant name to select
+    max_price: 199.99         # skip checkout if price exceeds this
+    quantity: 1
+
+# Monitoring settings
+monitor:
+  poll_interval_seconds: 5    # how often to check product pages
+  jitter_seconds: 2           # random jitter added to avoid detection
+
+# Checkout settings
+checkout:
+  mode: "auto"                # "auto" (HTTP first, browser fallback), "browser", "http"
+  timeout_seconds: 30         # max time for a single checkout attempt
+  retry_attempts: 3
+
+# Shipping / billing profile used for checkout
+profile:
+  email: "you@example.com"
+  first_name: "John"
+  last_name: "Doe"
+  address1: "123 Main St"
+  address2: ""
+  city: "New York"
+  province: "NY"
+  zip: "10001"
+  country: "US"
+  phone: "5551234567"
+
+# Payment (card details)
+payment:
+  card_number: ""
+  card_name: "John Doe"
+  card_expiry_month: "01"
+  card_expiry_year: "2028"
+  card_cvv: ""
+
+# Proxy configuration
+proxies:
+  enabled: false
+  rotation: "round_robin"     # "round_robin", "random", "sticky"
+  file: "config/proxies.txt"  # one proxy per line: http://user:pass@host:port
+
+# CAPTCHA solving
+captcha:
+  enabled: false
+  provider: "2captcha"        # "2captcha" or "anticaptcha"
+  api_key: ""
+
+# Notifications
+notifications:
+  discord:
+    enabled: false
+    webhook_url: ""
+  console:
+    enabled: true
+
+# Browser settings
+browser:
+  headless: true
+  user_agent: ""              # leave empty for default
