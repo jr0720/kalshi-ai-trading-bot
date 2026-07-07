@@ -68,6 +68,13 @@ class NotificationsConfig(BaseModel):
     console: dict = Field(default_factory=lambda: {"enabled": True})
 
 
+class ReleasesConfig(BaseModel):
+    enabled: bool = True
+    games: list[str] = Field(default_factory=lambda: ["pokemon", "one_piece"])
+    poll_interval_seconds: int = 3600
+    notify_on_first_run: bool = False
+
+
 class BrowserConfig(BaseModel):
     headless: bool = True
     user_agent: str = ""
@@ -82,6 +89,7 @@ class Settings(BaseModel):
     proxies: ProxyConfig = Field(default_factory=ProxyConfig)
     captcha: CaptchaConfig = Field(default_factory=CaptchaConfig)
     notifications: NotificationsConfig = Field(default_factory=NotificationsConfig)
+    releases: ReleasesConfig = Field(default_factory=ReleasesConfig)
     browser: BrowserConfig = Field(default_factory=BrowserConfig)
 
 

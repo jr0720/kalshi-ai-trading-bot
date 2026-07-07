@@ -60,6 +60,15 @@ notifications:
   console:
     enabled: true
 
+# Release monitoring — notifies you of new Pokemon/One Piece TCG product drops
+releases:
+  enabled: true
+  games:                          # which games to track
+    - pokemon
+    - one_piece
+  poll_interval_seconds: 3600     # how often to check (default: 1 hour)
+  notify_on_first_run: false      # true = notify for all existing products on first run
+
 # Browser settings
 browser:
   headless: true

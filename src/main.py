@@ -29,6 +29,24 @@ async def run_monitor(config_path: str) -> None:
     await monitor.run()
 
 
+async def run_releases(config_path: str) -> None:
+    from src.releases.monitor import ReleaseMonitor
+
+    settings = load_settings(config_path)
+    monitor = ReleaseMonitor(settings)
+    await monitor.run()
+
+
+async def run_releases_check(config_path: str) -> None:
+    from src.releases.monitor import ReleaseMonitor
+
+    settings = load_settings(config_path)
+    monitor = ReleaseMonitor(settings)
+    new = await monitor.check_once()
+    if not new:
+        console.print("[dim]No new releases found (or first run — all cataloged).[/dim]")
+
+
 async def run_single_check(config_path: str) -> None:
     from src.captcha_solver import CaptchaSolver
     from src.models import ProductTarget
@@ -65,6 +83,8 @@ def main() -> None:
 
     sub.add_parser("monitor", help="Monitor products and auto-checkout when in stock")
     sub.add_parser("check", help="One-time stock check on all configured products")
+    sub.add_parser("releases", help="Continuously monitor for new Pokemon/One Piece TCG releases")
+    sub.add_parser("releases-check", help="One-time check for new TCG releases")
 
     args = parser.parse_args()
 
@@ -77,6 +97,13 @@ def main() -> None:
             asyncio.run(run_monitor(args.config))
         except KeyboardInterrupt:
             console.print("\n[yellow]Stopped by user[/yellow]")
+    elif args.command == "releases":
+        try:
+            asyncio.run(run_releases(args.config))
+        except KeyboardInterrupt:
+            console.print("\n[yellow]Stopped by user[/yellow]")
+    elif args.command == "releases-check":
+        asyncio.run(run_releases_check(args.config))
     else:
         parser.print_help()
         sys.exit(1)

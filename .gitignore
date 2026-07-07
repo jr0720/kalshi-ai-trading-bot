@@ -14,5 +14,6 @@ config/settings.yaml
 config/proxies.txt
 config/accounts.yaml
 *.log
+data/
 .pytest_cache/
 .mypy_cache/
