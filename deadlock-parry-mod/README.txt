@@ -7,8 +7,9 @@ YOUR heavy melees AND for enemies'/teammates' — an enemy winding up a
 heavy melee near you will effectively yell PARRY at you, positionally.
 Nobody else in the match hears anything.
 
-Replaced files (all heavy melee swing variants):
-  sounds/player/melee/shared/swing_charged_01..07.vsnd_c
+Replaced files:
+  sounds/player/melee/shared/charged_melee_full.vsnd_c   (windup/charge - the main heavy melee sound, shared by ALL heroes)
+  sounds/player/melee/shared/swing_charged_01..07.vsnd_c (swing whoosh on release)
 
 INSTALL — Deadlock Mod Manager:
   Add this .vpk as a local mod (or drop the zip in), then launch the game
@@ -32,3 +33,12 @@ Mod Manager.
 
 Game updates occasionally break sound mods; if the sound reverts after a
 patch, just re-install (or rebuild) the vpk.
+
+TROUBLESHOOTING - "I hear no change in game":
+  1. Make sure the vpk is really in game/citadel/addons/ after enabling.
+  2. Mods must be enabled once: in Deadlock Mod Manager run its setup so it
+     patches gameinfo.gi. Steam's "Verify integrity of game files" UNDOES
+     this patch - re-run the manager's setup after verifying/updating.
+  3. Quick mount test: install any known-working sound mod from GameBanana
+     via the manager. If that also changes nothing, addons aren't mounting
+     (see step 2). If it works but this one doesn't, report it.
