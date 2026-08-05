@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """Rebuild the PARRY heavy-melee Deadlock mod with your own recording.
 
-Usage:  python3 make_parry_vpk.py your_recording.wav [--no-normalize]
+Usage:  python3 make_parry_vpk.py your_recording.wav [--no-normalize] [--drive N]
+
+--drive N pushes N dB of gain into hard clipping after normalization for
+extra perceived loudness (default 6; the prebuilt vpk uses 9). Higher =
+louder but more distorted. Use --drive 0 for a clean master.
 
 Needs Python 3 and ffmpeg on PATH. Output: pak97_dir.vpk in the current
 directory. Your clip is trimmed, resampled to 32 kHz mono, loudness-
@@ -28,7 +32,7 @@ def probe_duration(path):
     return float(run('ffprobe','-v','error','-show_entries','format=duration',
                      '-of','csv=p=0', path).strip())
 
-def encode(src, normalize):
+def encode(src, normalize, drive):
     tmp = tempfile.mkdtemp()
     trimmed = os.path.join(tmp, 't.wav')
     run('ffmpeg','-y','-v','error','-i',src,'-af',
@@ -42,9 +46,10 @@ def encode(src, normalize):
         filters.append(f'atempo={speed:.4f}')
         print(f'clip is {dur:.2f}s; speeding up {speed:.2f}x to fit {MAX_DUR}s')
     if normalize:
-        filters += ['speechnorm=e=25:r=0.0005:l=1',
-                    'acompressor=threshold=0.5:ratio=4:attack=1:release=60:makeup=2',
-                    'alimiter=limit=0.97']
+        filters += ['equalizer=f=3000:t=q:w=1:g=5',
+                    'speechnorm=e=25:r=0.0005:l=1']
+        if drive:
+            filters.append(f'volume={drive}dB')
     filters.append(f'apad=whole_dur={MAX_DUR}')
     shaped = os.path.join(tmp, 's.wav')
     run('ffmpeg','-y','-v','error','-i',trimmed,'-af',','.join(filters),
@@ -90,7 +95,11 @@ def main():
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
     if not args:
         sys.exit(__doc__)
-    payload = encode(args[0], '--no-normalize' not in sys.argv)
+    drive = 6.0
+    if '--drive' in sys.argv:
+        drive = float(sys.argv[sys.argv.index('--drive') + 1])
+        args = [a for a in args if a != sys.argv[sys.argv.index('--drive') + 1]]
+    payload = encode(args[0], '--no-normalize' not in sys.argv, drive)
     raw = base64.b64decode(HEADERS_B64)
     hdrs = [raw[i*HEADER_LEN:(i+1)*HEADER_LEN] for i in range(5)]
     files = {}
